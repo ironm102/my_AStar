@@ -2,6 +2,7 @@
 
 public class Node
 {
+    #region Variables
     //The node class is used to hold information about the objects in the grid
     //In this case, it holds info about the world position and also the position of the object in the grid
     //And if the position is walkable or not, i.e. is not an obstacle
@@ -23,7 +24,9 @@ public class Node
     {
         get { return gCost + hCost; }
     }
+    #endregion Variables
 
+    #region Constructor
     //Creates a constructor that assigns given info to the variables
     public Node(bool _walkable, Vector2 _worldPosition, int _gridX, int _gridY)
     {
@@ -32,4 +35,5 @@ public class Node
         gridX = _gridX;
         gridY = _gridY;
     }
+    #endregion Constructor
 }

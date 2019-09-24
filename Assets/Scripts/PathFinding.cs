@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
+    #region variables, start and Update
     public Transform seeker, target;
 
     Grid grid;
@@ -17,7 +18,9 @@ public class PathFinding : MonoBehaviour
         //Calls the FindPath method, using the player and target positions as the sources
         FindPath(seeker.position, target.position);
     }
+    #endregion variables, start and Update
 
+    #region FindPath
     void FindPath(Vector2 startPos, Vector2 targetPos)
     {
         //Makes variables out of the players and targets positions on the grid
@@ -70,8 +73,10 @@ public class PathFinding : MonoBehaviour
                 //Determines the new cost of the neighbour node, by adding the distance to the target
                 //to our current node and puts the value in a new variable
                 int newMovementCostToNeighbour = currentNode.gCost + getDistance(currentNode, neighbour);
-                //if the new cost is less than the neighbours or if the open set contains our neighbour
+                //if the new cost is less than the neighbours or if the open set does not contain our neighbour
                 //give new values to the neighbour
+                //This is to update the value of a path in the case of it being close to the start node,
+                //but we took a long way to get there,therefore has a high cost
                 if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {
                     //Sets the neighbours gCost(distance from startPosition) to the new cost, which is our current cost
@@ -90,7 +95,9 @@ public class PathFinding : MonoBehaviour
             }
         }
     }
+    #endregion FindPath
 
+#region TracePath
     //Creates a method to retrace our path back to the starting node, using the players start position
     //and the targets position
     void RetracePath(Node startNode, Node endNode)
@@ -114,7 +121,9 @@ public class PathFinding : MonoBehaviour
         //changes path list in the grid class, to the values of this path list
         grid.path = path;
     }
+    #endregion TracePath
 
+    #region GetDistance
     //Method to get the distance from one node to the other and set the cost values for the nodes
     //and returns the cost as an integer
     int getDistance(Node nodeA, Node nodeB)
@@ -137,4 +146,5 @@ public class PathFinding : MonoBehaviour
         //If that is not the case, swaps the X and Y values and returns that value
         return 14 * dstX + 10 * (dstY - dstX);
     }
+    #endregion GetDistancec
 }

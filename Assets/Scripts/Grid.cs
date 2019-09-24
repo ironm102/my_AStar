@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-
+    #region variables, start and Update
     public Vector2 gridWorldSize;
     public float nodeRadius;
     public LayerMask unwalkableMask;
@@ -25,7 +25,9 @@ public class Grid : MonoBehaviour
         //Calls the method to create the grid
         CreateGrid();
     }
+    #endregion variables, start and Update
 
+    #region CreateGrid
     void CreateGrid()
     {
         //Assigns the amount of nodes that fit into the grid
@@ -47,7 +49,9 @@ public class Grid : MonoBehaviour
             }
         }
     }
+    #endregion CreateGrid
 
+    #region GetNeighbours
     //Method to get the info about the neighbouring nodes aronud the specified node
     public List<Node> GetNeighbours(Node node)
     {
@@ -80,7 +84,9 @@ public class Grid : MonoBehaviour
         //Ends the loop by returing the list
         return neighbours;
     }
+    #endregion GetNeighbours
 
+    #region NodeFromWorldPoint
     //In the case of objects that does not have a static position, we use this method to
     //compare that objects position to the grid
     public Node NodeFromWorldPoint(Vector2 worldPosition)
@@ -99,7 +105,9 @@ public class Grid : MonoBehaviour
         //Returns the position as a Node
         return grid[x, y];
     }
+    #endregion NodeFromWorldPoint
 
+    #region DrawGizmos
     private void OnDrawGizmos()
     {
         //Draws the grid size in the UI
@@ -128,4 +136,5 @@ public class Grid : MonoBehaviour
             }
         }
     }
+    #endregion DrawGizmos
 }
