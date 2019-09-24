@@ -14,7 +14,7 @@ public class Grid : MonoBehaviour
 
     public List<Node> path;
 
-    private void Start()
+    private void Awake()
     {
         //nodeDiameter calculates the diameter of each Node
         nodeDiameter = nodeRadius * 2;
@@ -42,7 +42,7 @@ public class Grid : MonoBehaviour
                 //createes a Vector2 that determines the nodes positions, by addin the nodes center
                 //to the world bottom left.
                 Vector2 worldPosition = worldBottomLeft + Vector2.right * (x * nodeDiameter + nodeRadius) + Vector2.up * (y * nodeDiameter + nodeRadius);
-                //Checks if the Node is not colliding with any objects(which is the obstacles), if so, assigns true to walkable
+                //Sets the Object to unwalkable if it collides with the grid(only objects with a collider and unwalkable Layer will do)
                 bool walkable = !Physics2D.CircleCast(worldPosition, nodeRadius * 0.1f, Vector2.right, nodeRadius * 0.1f, unwalkableMask);
                 //Assigns the information of walkable and the position to the corresponding node in the grid
                 grid[x, y] = new Node(walkable, worldPosition, x, y);
@@ -61,7 +61,7 @@ public class Grid : MonoBehaviour
         //loops through all grid positions around the node
         for (int x = -1; x <= 1; x++)
         {
-            for (int y = -1; y < 1; y++)
+            for (int y = -1; y <= 1; y++)
             {
                 //The node with position 0,0 is the node in the middle and therefore need to be skipped
                 if (x == 0 && y == 0)

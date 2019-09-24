@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Grid.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\PathFinding.cs" />
+    <Compile Include="Assets\Scripts\Utilities.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/yunis.al.breihi/Documents/sourceTree_repositories/my_AStar/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

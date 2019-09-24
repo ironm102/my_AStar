@@ -6,17 +6,36 @@ public class PathFinding : MonoBehaviour
     #region variables, start and Update
     public Transform seeker, target;
 
+    public float maxTime = 0.2f;
+    float timer;
+
     Grid grid;
+    Utilities utilities = new Utilities();
+
+    List<Node> path;
+    List<Node> tempPath;
+
+    int pathIndex;
+    bool foundPath = true;
 
     private void Awake()
     {
+        utilities.Assert(seeker);
+        utilities.Assert(target);
         grid = GetComponent<Grid>();
+        RandomPos(target);
     }
 
     private void Update()
     {
+        //does a check to see if the target is on an obstacle, if so, randomizes a new position
+        while (Physics2D.Raycast(target.position, Vector2.zero, 1, grid.unwalkableMask).collider)
+        {
+            RandomPos(target);
+        }
         //Calls the FindPath method, using the player and target positions as the sources
         FindPath(seeker.position, target.position);
+        MovePlayer();
     }
     #endregion variables, start and Update
 
@@ -97,23 +116,26 @@ public class PathFinding : MonoBehaviour
     }
     #endregion FindPath
 
-#region TracePath
+    #region TracePath
     //Creates a method to retrace our path back to the starting node, using the players start position
     //and the targets position
     void RetracePath(Node startNode, Node endNode)
     {
         //Creates a list to hold the values of the nodes in the path
-        List<Node> path = new List<Node>();
+        path = new List<Node>();
         //Variable that holds the targets position
         Node currentNode = endNode;
 
         //A loop that adds all the nodes in the path to the path list
         //by constantly adding the current node and then changing it to the parent node
         //until there are no parents left
+
         while (currentNode != startNode)
         {
+
             path.Add(currentNode);
             currentNode = currentNode.parent;
+
         }
         //then reverse the path, since we want to trace back from the end node to get the shortest path
         path.Reverse();
@@ -147,4 +169,47 @@ public class PathFinding : MonoBehaviour
         return 14 * dstX + 10 * (dstY - dstX);
     }
     #endregion GetDistancec
+
+    #region Player Movement
+    void MovePlayer()
+    {
+        //starts a timer to use for incremental movement
+        timer += Time.deltaTime;
+
+        //Since we only want to change the pathing to a new position once the seeker is at the target,
+        //We do a bool that deactivates itself after setting a new temp list to the current path list
+        if (foundPath)
+        {
+            tempPath = path;
+            foundPath = false;
+        }
+
+        //Movement that only happens every 0.1sec, by reseting itself everytime it gets to the maxValue(0.1f)
+        //also increments the pathIndex, which is used later to set the seekers position
+        if (timer > maxTime)
+        {
+            seeker.transform.position = tempPath[pathIndex].worldPosition;
+            pathIndex++;
+            timer = 0f;
+        }
+
+        //checks if the seeker is at the same grid position as the target,
+        //if so, randomize a new position for the target and reset the list index
+        //and then sets the foundPath bool to true, to set the new list positions to the new targets list positions
+        if (grid.NodeFromWorldPoint(seeker.position) == grid.NodeFromWorldPoint(target.position))
+        {
+            RandomPos(target);
+
+            pathIndex = 0;
+            foundPath = true;
+        }
+    }
+
+    //randomizes the position of the specified object, to the size of the grid
+    private void RandomPos(Transform transform)
+    {
+        Vector2 newTargetPos = new Vector2(Random.Range(Mathf.RoundToInt((-grid.gridWorldSize.x + 1) / 2), Mathf.RoundToInt(grid.gridWorldSize.x / 2)), Random.Range(Mathf.RoundToInt((-grid.gridWorldSize.y + 1) / 2), Mathf.RoundToInt(grid.gridWorldSize.y / 2)));
+        transform.position = newTargetPos;
+    }
+    #endregion Player Movement
 }
